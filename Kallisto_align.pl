@@ -83,15 +83,17 @@ chomp(my $basename = `basename $query_file`);
     $basename =~ s/\.\S+$//;
 
 if ($format eq 'PE') {
-          my $align_command = "kallisto quant -i $database_path.index -o $basename $KALLISTO_ARGS $query_file $second_file";
+          my $align_command = "kallisto quant -i $database_path.index -o $basename $KALLISTO_ARGS $query_file $second_file | samtools view -bS - > $basename.bam";
           system $align_command;
-	  my $mv_out = "mv $basename kallisto_qaunt_output";
+	  my $mv_out = "mv $basename.bam $basename; mv $basename kallisto_qaunt_output";
+	  #my $mv_out = "mv $basename kallisto_qaunt_output";
 	  system $mv_out;          
            } 
 elsif($format eq 'SE'){
-          my $align_command = "kallisto quant -i $database_path.index -o $basename $KALLISTO_ARGS --single -r $query_file";
+          my $align_command = "kallisto quant -i $database_path.index -o $basename $KALLISTO_ARGS --single -r $query_file | samtools view -bS - > $basename.bam";
           system $align_command;
-	my $mv_out2 = "mv $basename kallisto_qaunt_output";
+	  my $mv_out2 = "mv $basename.bam $basename; mv $basename kallisto_qaunt_output";
+	#my $mv_out2 = "mv $basename kallisto_qaunt_output";
           system $mv_out2;        
         	}
    	}
